@@ -1,0 +1,28 @@
+{% extends "Pages/index.html" %}
+{% block body %}
+<div class="container">
+    <div class="card">
+        <h1>🪄 Alternate Universe</h1>
+        <h2>Welcome Back</h2>
+        
+        {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+        
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <input autofocus class="form-control" type="text" name="username" placeholder="✨ Username" required>
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="🔒 Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <span>Enter Universe</span>
+            </button>
+        </form>
+        
+        <p class="link-text">Don't have an account? <a href="{% url 'signup' %}">Create one here</a></p>
+    </div>
+</div>
+{% endblock %}

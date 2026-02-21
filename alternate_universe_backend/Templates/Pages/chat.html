@@ -1,0 +1,568 @@
+{% extends "Pages/index.html" %}
+{% block body %}
+<div class="chat-wrapper">
+    <div class="chat-header">
+        <div class="header-content">
+            <h1>🪄 Alternate Universe AI</h1>
+            <div class="user-info">
+                <span class="username">👤 {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="logout-btn">🚪 Exit</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="universe-selector-card">
+            <label for="universe-select" class="selector-label">🌌 Choose Your Universe:</label>
+            <select id="universe-select" class="universe-select">
+                {% for style in universe_styles %}
+                <option value="{{ style }}">{{ style|title }}</option>
+                {% endfor %}
+            </select>
+            <div class="universe-preview" id="universe-preview">
+                <span id="preview-text">Select a universe style to begin your journey</span>
+            </div>
+        </div>
+        
+        <div id="chat-messages" class="chat-messages">
+            <div class="welcome-message">
+                <div class="welcome-icon">✨</div>
+                <h3>Welcome to Alternate Universe!</h3>
+                <p>Choose a universe style and start chatting with AI in different personas.</p>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="input-wrapper">
+                <input type="text" id="user-input" class="chat-input" placeholder="Type your message across the multiverse..." />
+                <button id="send-btn" class="send-btn">
+                    <span class="send-icon">🚀</span>
+                    <span class="send-text">Send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-wrapper {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+    }
+
+    .chat-header {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 68, 68, 0.3);
+        padding: 20px 40px;
+        box-shadow: 0 4px 20px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+    }
+
+    .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .chat-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-family: 'Orbitron', sans-serif;
+        background: linear-gradient(45deg, #ffffff, #ff4444, #ffffff, #ff6666, #ffffff);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 3s linear infinite;
+        text-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .username {
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 500;
+        padding: 10px 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 68, 68, 0.3);
+    }
+
+    .logout-btn {
+        padding: 10px 20px;
+        background: rgba(139, 0, 0, 0.4);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        border: 2px solid rgba(255, 68, 68, 0.5);
+    }
+
+    .logout-btn:hover {
+        background: rgba(220, 20, 60, 0.5);
+        border-color: rgba(255, 68, 68, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    }
+
+    .chat-container {
+        flex: 1;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .universe-selector-card {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+    }
+
+    .selector-label {
+        display: block;
+        color: #fff;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .universe-select {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid rgba(255, 68, 68, 0.3);
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        margin-bottom: 15px;
+    }
+
+    .universe-select option {
+        background: #8b0000;
+        color: #fff;
+    }
+
+    .universe-select:focus {
+        outline: none;
+        border-color: rgba(255, 68, 68, 0.8);
+        box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), inset 0 0 20px rgba(255, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .universe-preview {
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        font-style: italic;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        border: 1px solid rgba(255, 68, 68, 0.2);
+    }
+
+    .chat-messages {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 25px;
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        overflow-y: auto;
+        max-height: calc(100vh - 400px);
+        min-height: 400px;
+        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+    }
+
+    .chat-messages::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: rgba(255, 68, 68, 0.5);
+        border-radius: 10px;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 68, 68, 0.7);
+    }
+
+    .welcome-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .welcome-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    .welcome-message h3 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .welcome-message p {
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+
+    .message {
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 15px;
+        animation: messageSlide 0.3s ease-out;
+        position: relative;
+        backdrop-filter: blur(10px);
+    }
+
+    @keyframes messageSlide {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .user-message {
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(220, 20, 60, 0.4));
+        border: 1px solid rgba(255, 68, 68, 0.4);
+        margin-left: auto;
+        max-width: 70%;
+        text-align: right;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    }
+
+    .ai-message {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(40, 0, 0, 0.5));
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 70%;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .universe-label {
+        font-weight: 700;
+        color: #ff4444;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-family: 'Orbitron', sans-serif;
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+    }
+
+    .message-text {
+        color: #fff;
+        font-size: 1rem;
+        line-height: 1.6;
+        word-wrap: break-word;
+    }
+
+    .chat-input-container {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid rgba(255, 68, 68, 0.3);
+        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+    }
+
+    .input-wrapper {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 18px 25px;
+        border: 2px solid rgba(255, 68, 68, 0.3);
+        border-radius: 25px;
+        background: rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .chat-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .chat-input:focus {
+        outline: none;
+        border-color: rgba(255, 68, 68, 0.8);
+        background: rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), inset 0 0 20px rgba(255, 0, 0, 0.1);
+    }
+
+    .send-btn {
+        padding: 18px 35px;
+        background: linear-gradient(135deg, #8b0000 0%, #dc143c 50%, #ff0000 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .send-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .send-btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .send-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(255, 0, 0, 0.7), 0 0 40px rgba(255, 68, 68, 0.4);
+        background: linear-gradient(135deg, #a00000 0%, #ff1744 50%, #ff3333 100%);
+    }
+
+    .send-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .send-icon, .send-text {
+        position: relative;
+        z-index: 1;
+    }
+
+    .typing-indicator {
+        display: none;
+        padding: 15px 20px;
+        color: rgba(255, 255, 255, 0.7);
+        font-style: italic;
+    }
+
+    .typing-indicator.active {
+        display: block;
+    }
+
+    .typing-indicator::after {
+        content: '...';
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60%, 100% { content: '...'; }
+    }
+
+    @media (max-width: 768px) {
+        .chat-header {
+            padding: 15px 20px;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-message, .ai-message {
+            max-width: 85%;
+        }
+
+        .input-wrapper {
+            flex-direction: column;
+        }
+
+        .send-btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<script>
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    const universeSelect = document.getElementById('universe-select');
+    const universePreview = document.getElementById('universe-preview');
+
+    // Universe descriptions
+    const universeDescriptions = {
+        "wizard": "🧙 A mystical medieval wizard who speaks with ancient wisdom and magical words",
+        "robot": "🤖 A futuristic robot with precise, monotone responses",
+        "medieval knight": "⚔️ A brave knight from medieval times, formal and chivalrous",
+        "king": "👑 A royal king delivering speeches with regal authority",
+        "sci-fi": "🚀 A futuristic sci-fi character with imaginative and advanced perspectives"
+    };
+
+    // Update preview when universe changes
+    universeSelect.addEventListener('change', function() {
+        const selected = this.value;
+        universePreview.querySelector('#preview-text').textContent = universeDescriptions[selected] || "Select a universe style";
+    });
+
+    // Remove welcome message on first message
+    let isFirstMessage = true;
+
+    function addMessage(text, isUser, universe = null) {
+        // Remove welcome message on first user message
+        if (isFirstMessage && isUser) {
+            const welcomeMsg = chatMessages.querySelector('.welcome-message');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+            isFirstMessage = false;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+        
+        if (universe && !isUser) {
+            const universeLabel = document.createElement('div');
+            universeLabel.className = 'universe-label';
+            universeLabel.textContent = `[${universe.toUpperCase()} STYLE]`;
+            messageDiv.appendChild(universeLabel);
+        }
+        
+        const textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
+        textDiv.textContent = text;
+        messageDiv.appendChild(textDiv);
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const typing = document.createElement('div');
+        typing.className = 'typing-indicator active';
+        typing.id = 'typing-indicator';
+        typing.textContent = 'AI is thinking';
+        chatMessages.appendChild(typing);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        const typing = document.getElementById('typing-indicator');
+        if (typing) typing.remove();
+    }
+
+    async function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+        
+        const universe = universeSelect.value;
+        
+        // Add user message
+        addMessage(text, true);
+        userInput.value = '';
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="send-icon">⏳</span><span class="send-text">Sending...</span>';
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        try {
+            const response = await fetch('/api/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: text,
+                    universe: universe
+                })
+            });
+            
+            hideTypingIndicator();
+            const data = await response.json();
+            
+            if (response.ok) {
+                addMessage(data.response, false, data.universe);
+            } else {
+                addMessage('❌ Error: ' + (data.error || 'Unknown error'), false);
+            }
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage('❌ Error: ' + error.message, false);
+        } finally {
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<span class="send-icon">🚀</span><span class="send-text">Send</span>';
+            userInput.focus();
+        }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Initialize preview
+    universeSelect.dispatchEvent(new Event('change'));
+</script>
+{% endblock %}
