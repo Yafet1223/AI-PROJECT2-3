@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: alternate-universe
+    env: python
+    buildCommand: pip install -r requirements.txt && mkdir -p staticfiles && python manage.py collectstatic --noinput
+    startCommand: gunicorn alternate_universe_backend.wsgi:application
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: GENAI_API_KEY
+        sync: false
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: alternate-universe.onrender.com
+
