@@ -1,47 +1,67 @@
 {% extends "Pages/index.html" %}
 {% block body %}
 <div class="chat-wrapper">
-    <div class="chat-header">
-        <div class="header-content">
-            <h1>🪄 Alternate Universe AI</h1>
-            <div class="user-info">
-                <span class="username">👤 {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="logout-btn">🚪 Exit</a>
+    <header class="chat-header">
+        <div class="header-container">
+            <div class="logo-section">
+                <h1>Alternate Universe</h1>
+                <span class="tagline">AI Chat Portal</span>
+            </div>
+            <div class="user-section">
+                <div class="user-badge">
+                    <span class="user-icon">👤</span>
+                    <span class="user-name">{{ user.username }}</span>
+                </div>
+                <a href="{% url 'logout' %}" class="logout-link">Sign out</a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="chat-container">
-        <div class="universe-selector-card">
-            <label for="universe-select" class="selector-label">🌌 Choose Your Universe:</label>
-            <select id="universe-select" class="universe-select">
-                {% for style in universe_styles %}
-                <option value="{{ style }}">{{ style|title }}</option>
-                {% endfor %}
-            </select>
-            <div class="universe-preview" id="universe-preview">
-                <span id="preview-text">Select a universe style to begin your journey</span>
-            </div>
+    <main class="chat-main">
+        <div class="chat-layout">
+            <aside class="sidebar">
+                <div class="sidebar-card">
+                    <label for="universe-select" class="sidebar-label">Universe Style</label>
+                    <select id="universe-select" class="universe-select">
+                        {% for style in universe_styles %}
+                        <option value="{{ style }}">{{ style|title }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="universe-preview" id="universe-preview">
+                        <div class="preview-icon">✨</div>
+                        <p id="preview-text">Select a universe style to begin</p>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="chat-section">
+                <div id="chat-messages" class="chat-messages">
+                    <div class="welcome-state">
+                        <div class="welcome-icon">🚀</div>
+                        <h2>Welcome to Alternate Universe</h2>
+                        <p>Choose a universe style and start chatting with AI in different personas.</p>
+                    </div>
+                </div>
+                
+                <div class="chat-input-wrapper">
+                    <form class="chat-form" onsubmit="event.preventDefault(); sendMessage();">
+                        <input 
+                            type="text" 
+                            id="user-input" 
+                            class="chat-input" 
+                            placeholder="Type your message..." 
+                            autocomplete="off"
+                        />
+                        <button type="submit" id="send-btn" class="send-button">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 2L9 11M18 2L12 18L9 11M18 2L2 8L9 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
         </div>
-        
-        <div id="chat-messages" class="chat-messages">
-            <div class="welcome-message">
-                <div class="welcome-icon">✨</div>
-                <h3>Welcome to Alternate Universe!</h3>
-                <p>Choose a universe style and start chatting with AI in different personas.</p>
-            </div>
-        </div>
-        
-        <div class="chat-input-container">
-            <div class="input-wrapper">
-                <input type="text" id="user-input" class="chat-input" placeholder="Type your message across the multiverse..." />
-                <button id="send-btn" class="send-btn">
-                    <span class="send-icon">🚀</span>
-                    <span class="send-text">Send</span>
-                </button>
-            </div>
-        </div>
-    </div>
+    </main>
 </div>
 
 <style>
@@ -49,152 +69,191 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        position: relative;
-        z-index: 1;
+        background: var(--primary-black);
     }
 
     .chat-header {
-        background: rgba(0, 0, 0, 0.4);
+        background: var(--dark-black);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 1.25rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 68, 68, 0.3);
-        padding: 20px 40px;
-        box-shadow: 0 4px 20px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
     }
 
-    .header-content {
-        max-width: 1200px;
+    .header-container {
+        max-width: 1400px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 20px;
+        gap: 2rem;
     }
 
-    .chat-header h1 {
+    .logo-section h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--white);
         margin: 0;
-        font-size: 2rem;
-        font-family: 'Orbitron', sans-serif;
-        background: linear-gradient(45deg, #ffffff, #ff4444, #ffffff, #ff6666, #ffffff);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: shimmer 3s linear infinite;
-        text-shadow: 0 0 30px rgba(255, 68, 68, 0.5);
+        letter-spacing: -0.02em;
     }
 
-    .user-info {
+    .tagline {
+        font-size: 0.75rem;
+        color: var(--white-muted);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .user-section {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 1.5rem;
     }
 
-    .username {
-        color: #fff;
-        font-size: 1.1rem;
+    .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        font-size: 0.875rem;
+    }
+
+    .user-icon {
+        font-size: 1rem;
+    }
+
+    .user-name {
         font-weight: 500;
-        padding: 10px 20px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 68, 68, 0.3);
+        color: var(--white);
     }
 
-    .logout-btn {
-        padding: 10px 20px;
-        background: rgba(139, 0, 0, 0.4);
-        border-radius: 20px;
-        transition: all 0.3s ease;
-        border: 2px solid rgba(255, 68, 68, 0.5);
+    .logout-link {
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
     }
 
-    .logout-btn:hover {
-        background: rgba(220, 20, 60, 0.5);
-        border-color: rgba(255, 68, 68, 0.8);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    .logout-link:hover {
+        background: rgba(255, 255, 255, 0.05);
     }
 
-    .chat-container {
+    .chat-main {
         flex: 1;
-        max-width: 1200px;
-        width: 100%;
+        padding: 2rem;
+        overflow: hidden;
+    }
+
+    .chat-layout {
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 30px 20px;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        height: calc(100vh - 120px);
+    }
+
+    .sidebar {
         display: flex;
         flex-direction: column;
-        gap: 20px;
     }
 
-    .universe-selector-card {
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(20px);
+    .sidebar-card {
+        background: var(--dark-black);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
-        padding: 25px;
-        border: 1px solid rgba(255, 68, 68, 0.3);
-        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        position: sticky;
+        top: 100px;
     }
 
-    .selector-label {
+    .sidebar-label {
         display: block;
-        color: #fff;
-        font-size: 1.1rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        margin-bottom: 15px;
-        font-family: 'Orbitron', sans-serif;
+        color: var(--white-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
     }
 
     .universe-select {
         width: 100%;
-        padding: 15px 20px;
-        border: 2px solid rgba(255, 68, 68, 0.3);
+        padding: 0.875rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
-        font-size: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--white);
+        font-size: 0.9375rem;
+        font-family: 'Inter', sans-serif;
         font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        margin-bottom: 15px;
+        transition: all 0.2s ease;
+        margin-bottom: 1rem;
     }
 
-    .universe-select option {
-        background: #8b0000;
-        color: #fff;
+    .universe-select:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .universe-select:focus {
         outline: none;
-        border-color: rgba(255, 68, 68, 0.8);
-        box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), inset 0 0 20px rgba(255, 0, 0, 0.1);
-        background: rgba(0, 0, 0, 0.5);
+        border-color: var(--red-primary);
+        box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+    }
+
+    .universe-select option {
+        background: var(--dark-black);
+        color: var(--white);
     }
 
     .universe-preview {
-        padding: 15px;
-        background: rgba(0, 0, 0, 0.3);
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.02);
         border-radius: 12px;
-        color: rgba(255, 255, 255, 0.9);
-        font-style: italic;
-        min-height: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-align: center;
+    }
+
+    .preview-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .universe-preview p {
+        font-size: 0.8125rem;
+        color: var(--white-muted);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .chat-section {
         display: flex;
-        align-items: center;
-        border: 1px solid rgba(255, 68, 68, 0.2);
+        flex-direction: column;
+        gap: 1rem;
     }
 
     .chat-messages {
         flex: 1;
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(20px);
+        background: var(--dark-black);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
-        padding: 25px;
-        border: 1px solid rgba(255, 68, 68, 0.3);
+        padding: 1.5rem;
         overflow-y: auto;
-        max-height: calc(100vh - 400px);
-        min-height: 400px;
-        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+        min-height: 0;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .chat-messages::-webkit-scrollbar {
@@ -202,61 +261,56 @@
     }
 
     .chat-messages::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
+        background: transparent;
     }
 
     .chat-messages::-webkit-scrollbar-thumb {
-        background: rgba(255, 68, 68, 0.5);
-        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
     }
 
     .chat-messages::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 68, 68, 0.7);
+        background: rgba(255, 255, 255, 0.15);
     }
 
-    .welcome-message {
+    .welcome-state {
         text-align: center;
-        padding: 40px 20px;
-        color: rgba(255, 255, 255, 0.9);
+        padding: 4rem 2rem;
+        color: var(--white-muted);
     }
 
     .welcome-icon {
         font-size: 4rem;
-        margin-bottom: 20px;
-        animation: pulse 2s ease-in-out infinite;
+        margin-bottom: 1.5rem;
+        display: block;
     }
 
-    @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+    .welcome-state h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--white);
+        margin-bottom: 0.5rem;
     }
 
-    .welcome-message h3 {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 1.8rem;
-        margin-bottom: 10px;
-        color: #fff;
-    }
-
-    .welcome-message p {
-        font-size: 1.1rem;
-        opacity: 0.8;
+    .welcome-state p {
+        font-size: 0.9375rem;
+        line-height: 1.6;
     }
 
     .message {
-        margin-bottom: 20px;
-        padding: 20px;
-        border-radius: 15px;
+        margin-bottom: 1rem;
+        padding: 1rem 1.25rem;
+        border-radius: 16px;
         animation: messageSlide 0.3s ease-out;
-        position: relative;
-        backdrop-filter: blur(10px);
+        max-width: 75%;
+        word-wrap: break-word;
     }
 
     @keyframes messageSlide {
         from {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(8px);
         }
         to {
             opacity: 1;
@@ -265,135 +319,114 @@
     }
 
     .user-message {
-        background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(220, 20, 60, 0.4));
-        border: 1px solid rgba(255, 68, 68, 0.4);
+        background: var(--red-primary);
+        color: var(--white);
         margin-left: auto;
-        max-width: 70%;
         text-align: right;
-        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+        border-bottom-right-radius: 4px;
     }
 
     .ai-message {
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(40, 0, 0, 0.5));
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        max-width: 70%;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom-left-radius: 4px;
     }
 
     .universe-label {
+        font-size: 0.6875rem;
         font-weight: 700;
-        color: #ff4444;
-        font-size: 0.85rem;
+        color: var(--red-light);
         text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 10px;
-        font-family: 'Orbitron', sans-serif;
-        opacity: 1;
-        text-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+        font-family: 'Space Grotesk', sans-serif;
     }
 
     .message-text {
-        color: #fff;
-        font-size: 1rem;
+        font-size: 0.9375rem;
         line-height: 1.6;
-        word-wrap: break-word;
+        color: var(--white);
     }
 
-    .chat-input-container {
-        background: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(20px);
+    .chat-input-wrapper {
+        background: var(--dark-black);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 20px;
-        padding: 20px;
-        border: 1px solid rgba(255, 68, 68, 0.3);
-        box-shadow: 0 8px 32px rgba(139, 0, 0, 0.5), inset 0 0 60px rgba(255, 0, 0, 0.1);
+        padding: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-    .input-wrapper {
+    .chat-form {
         display: flex;
-        gap: 15px;
+        gap: 0.75rem;
         align-items: center;
     }
 
     .chat-input {
         flex: 1;
-        padding: 18px 25px;
-        border: 2px solid rgba(255, 68, 68, 0.3);
-        border-radius: 25px;
-        background: rgba(0, 0, 0, 0.3);
-        color: #fff;
-        font-size: 16px;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
+        padding: 0.875rem 1.25rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--white);
+        font-size: 0.9375rem;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        outline: none;
     }
 
     .chat-input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--white-muted);
+    }
+
+    .chat-input:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.05);
     }
 
     .chat-input:focus {
-        outline: none;
-        border-color: rgba(255, 68, 68, 0.8);
-        background: rgba(0, 0, 0, 0.5);
-        box-shadow: 0 0 20px rgba(255, 68, 68, 0.4), inset 0 0 20px rgba(255, 0, 0, 0.1);
+        border-color: var(--red-primary);
+        background: rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
     }
 
-    .send-btn {
-        padding: 18px 35px;
-        background: linear-gradient(135deg, #8b0000 0%, #dc143c 50%, #ff0000 100%);
-        color: white;
+    .send-button {
+        padding: 0.875rem;
+        background: var(--red-primary);
+        color: var(--white);
         border: none;
-        border-radius: 25px;
-        font-size: 16px;
-        font-weight: 600;
+        border-radius: 12px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         display: flex;
         align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
-        position: relative;
-        overflow: hidden;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
+        flex-shrink: 0;
     }
 
-    .send-btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
+    .send-button:hover {
+        background: #ff1a1a;
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.35);
+        transform: translateY(-1px);
     }
 
-    .send-btn:hover::before {
-        width: 300px;
-        height: 300px;
+    .send-button:active {
+        transform: translateY(0);
     }
 
-    .send-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(255, 0, 0, 0.7), 0 0 40px rgba(255, 68, 68, 0.4);
-        background: linear-gradient(135deg, #a00000 0%, #ff1744 50%, #ff3333 100%);
-    }
-
-    .send-btn:disabled {
+    .send-button:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
     }
 
-    .send-icon, .send-text {
-        position: relative;
-        z-index: 1;
-    }
-
     .typing-indicator {
         display: none;
-        padding: 15px 20px;
-        color: rgba(255, 255, 255, 0.7);
+        padding: 1rem 1.25rem;
+        color: var(--white-muted);
+        font-size: 0.875rem;
         font-style: italic;
     }
 
@@ -401,42 +434,51 @@
         display: block;
     }
 
-    .typing-indicator::after {
-        content: '...';
-        animation: dots 1.5s steps(4, end) infinite;
+    @media (max-width: 1024px) {
+        .chat-layout {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+
+        .sidebar {
+            order: 2;
+        }
+
+        .sidebar-card {
+            position: static;
+        }
+
+        .chat-section {
+            order: 1;
+        }
+
+        .chat-messages {
+            min-height: 500px;
+        }
     }
 
-    @keyframes dots {
-        0%, 20% { content: '.'; }
-        40% { content: '..'; }
-        60%, 100% { content: '...'; }
-    }
+    @media (max-width: 640px) {
+        .chat-main {
+            padding: 1rem;
+        }
 
-    @media (max-width: 768px) {
         .chat-header {
-            padding: 15px 20px;
+            padding: 1rem 1.5rem;
         }
 
-        .chat-header h1 {
-            font-size: 1.5rem;
-        }
-
-        .header-content {
+        .header-container {
             flex-direction: column;
             align-items: flex-start;
+            gap: 1rem;
         }
 
-        .user-message, .ai-message {
-            max-width: 85%;
-        }
-
-        .input-wrapper {
-            flex-direction: column;
-        }
-
-        .send-btn {
+        .user-section {
             width: 100%;
-            justify-content: center;
+            justify-content: space-between;
+        }
+
+        .message {
+            max-width: 85%;
         }
     }
 </style>
@@ -448,7 +490,6 @@
     const universeSelect = document.getElementById('universe-select');
     const universePreview = document.getElementById('universe-preview');
 
-    // Universe descriptions
     const universeDescriptions = {
         "wizard": "🧙 A mystical medieval wizard who speaks with ancient wisdom and magical words",
         "robot": "🤖 A futuristic robot with precise, monotone responses",
@@ -457,21 +498,27 @@
         "sci-fi": "🚀 A futuristic sci-fi character with imaginative and advanced perspectives"
     };
 
-    // Update preview when universe changes
     universeSelect.addEventListener('change', function() {
         const selected = this.value;
-        universePreview.querySelector('#preview-text').textContent = universeDescriptions[selected] || "Select a universe style";
+        const previewText = universePreview.querySelector('#preview-text');
+        const previewIcon = universePreview.querySelector('.preview-icon');
+        
+        if (previewText) {
+            previewText.textContent = universeDescriptions[selected] || "Select a universe style to begin";
+        }
+        if (previewIcon) {
+            const icons = {"wizard": "🧙", "robot": "🤖", "medieval knight": "⚔️", "king": "👑", "sci-fi": "🚀"};
+            previewIcon.textContent = icons[selected] || "✨";
+        }
     });
 
-    // Remove welcome message on first message
     let isFirstMessage = true;
 
     function addMessage(text, isUser, universe = null) {
-        // Remove welcome message on first user message
         if (isFirstMessage && isUser) {
-            const welcomeMsg = chatMessages.querySelector('.welcome-message');
-            if (welcomeMsg) {
-                welcomeMsg.remove();
+            const welcomeState = chatMessages.querySelector('.welcome-state');
+            if (welcomeState) {
+                welcomeState.remove();
             }
             isFirstMessage = false;
         }
@@ -482,7 +529,7 @@
         if (universe && !isUser) {
             const universeLabel = document.createElement('div');
             universeLabel.className = 'universe-label';
-            universeLabel.textContent = `[${universe.toUpperCase()} STYLE]`;
+            universeLabel.textContent = universe.toUpperCase();
             messageDiv.appendChild(universeLabel);
         }
         
@@ -515,13 +562,10 @@
         
         const universe = universeSelect.value;
         
-        // Add user message
         addMessage(text, true);
         userInput.value = '';
         sendBtn.disabled = true;
-        sendBtn.innerHTML = '<span class="send-icon">⏳</span><span class="send-text">Sending...</span>';
         
-        // Show typing indicator
         showTypingIndicator();
         
         try {
@@ -542,19 +586,17 @@
             if (response.ok) {
                 addMessage(data.response, false, data.universe);
             } else {
-                addMessage('❌ Error: ' + (data.error || 'Unknown error'), false);
+                addMessage('Error: ' + (data.error || 'Unknown error'), false);
             }
         } catch (error) {
             hideTypingIndicator();
-            addMessage('❌ Error: ' + error.message, false);
+            addMessage('Error: ' + error.message, false);
         } finally {
             sendBtn.disabled = false;
-            sendBtn.innerHTML = '<span class="send-icon">🚀</span><span class="send-text">Send</span>';
             userInput.focus();
         }
     }
 
-    sendBtn.addEventListener('click', sendMessage);
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -562,7 +604,6 @@
         }
     });
 
-    // Initialize preview
     universeSelect.dispatchEvent(new Event('change'));
 </script>
 {% endblock %}

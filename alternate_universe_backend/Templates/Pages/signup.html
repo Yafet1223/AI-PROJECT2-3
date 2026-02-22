@@ -2,7 +2,10 @@
 {% block body %}
 <div class="container">
     <div class="card">
-        <h1>🌟 Join the Universe</h1>
+        <h1>
+            Alternate Universe
+            <span class="accent">Join the Portal</span>
+        </h1>
         <h2>Create Your Account</h2>
         
         {% if message %}
@@ -12,23 +15,23 @@
         <form action="{% url 'signup' %}" method="post">
             {% csrf_token %}
             <div class="form-group">
-                <input autofocus class="form-control" type="text" name="username" placeholder="👤 Username" required>
+                <input autofocus class="form-control" type="text" name="username" placeholder="Username" required>
             </div>
             <div class="form-group">
-                <input class="form-control" type="email" name="email" placeholder="📧 Email" required>
+                <input class="form-control" type="email" name="email" placeholder="Email address" required>
             </div>
             <div class="form-group">
-                <input class="form-control" type="password" name="password" placeholder="🔒 Password" required>
+                <input class="form-control" type="password" name="password" placeholder="Password" required>
             </div>
             <div class="form-group">
-                <input class="form-control" type="password" name="confirmation" placeholder="🔐 Confirm Password" required>
+                <input class="form-control" type="password" name="confirmation" placeholder="Confirm password" required>
             </div>
-            <button type="submit" class="btn btn-primary">
-                <span>Begin Journey</span>
+            <button type="submit" class="btn">
+                <span>Create Account</span>
             </button>
         </form>
         
-        <p class="link-text">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        <p class="link-text">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
     </div>
 </div>
 {% endblock %}
